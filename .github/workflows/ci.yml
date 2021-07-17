@@ -1,36 +1,45 @@
-name: .NET 5 CI
-on: [push]
+name: Publish
+# See https://patriksvensson.se/2020/03/creating-release-artifacts-with-github-actions/
+on:
+  release:
+    types: [published]
 
 jobs:
-  build:
-    runs-on: windows-latest
-    name: EditInC1
+  release:
+    name: Release
+    strategy:
+      matrix:
+        kind: ['windows']
+        include:
+          - kind: windows
+            os: windows-latest
+            target: win-x64
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.302' # Check for latest
+          dotnet-version: '5.0.302' # Check for latest at https://dotnet.microsoft.com/download/dotnet/5.0
+
       - name: Build
-        shell: bash # Git Bash for Windows Builds. Noice.
+        shell: bash
         run: |
-          # Define some variables for things we need
           tag=$(git describe --tags --abbrev=0)
           release_name="EditInC1-$tag-${{ matrix.target }}"
-
           # Build everything
-          dotnet publish src/EditInC1.csproj --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
-
+          dotnet publish src/EditInC1/EditInC1.csproj --framework net5.0 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
           # Pack files
           if [ "${{ matrix.target }}" == "win-x64" ]; then
+            # Pack to zip for Windows
             7z a -tzip "${release_name}.zip" "./${release_name}/*"
           else
-            tar czvf "${release_name}.tar.gz" "$release_name"
+          tar czvf "${release_name}.tar.gz" "$release_name"
           fi
-
           # Delete output directory
           rm -r "$release_name"
-
       - name: Publish
         uses: softprops/action-gh-release@v1
         with:
