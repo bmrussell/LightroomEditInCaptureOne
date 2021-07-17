@@ -11,8 +11,6 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.302' # Check for latest
-      - run: dotnet build
-
       - name: Build
         shell: bash # Git Bash for Windows Builds. Noice.
         run: |
