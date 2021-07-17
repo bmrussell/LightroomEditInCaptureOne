@@ -9,13 +9,12 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}\\bin\\Debug\\net5.0\\EditInC1.exe",
+            "program": "${workspaceFolder}\\src\\bin\\Debug\\net5.0\\EditInC1.exe",
             // For debug
             "args": ["F:\\Lightroom\\Images\\2018\\2018-10-28\\_DSF0116.C1.tif"],
             "cwd": "${workspaceFolder}",            
             "stopAtEntry": false,
             "console": "internalConsole"
         }
-
     ]
 }

@@ -1,2 +1,3 @@
-bin/
-obj/
+src/bin/
+src/obj/
+src/net5.0

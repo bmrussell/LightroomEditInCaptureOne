@@ -10,5 +10,32 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.302' # Check for latest at link below
+          dotnet-version: '5.0.302' # Check for latest
       - run: dotnet build
+
+      - name: Build
+        shell: bash # Git Bash for Windows Builds. Noice.
+        run: |
+          # Define some variables for things we need
+          tag=$(git describe --tags --abbrev=0)
+          release_name="EditInC1-$tag-${{ matrix.target }}"
+
+          # Build everything
+          dotnet publish src/EditInC1.csproj --framework netcoreapp3.1 --runtime "${{ matrix.target }}" -c Release -o "$release_name"
+
+          # Pack files
+          if [ "${{ matrix.target }}" == "win-x64" ]; then
+            7z a -tzip "${release_name}.zip" "./${release_name}/*"
+          else
+            tar czvf "${release_name}.tar.gz" "$release_name"
+          fi
+
+          # Delete output directory
+          rm -r "$release_name"
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "EditInC1*"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
