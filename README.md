@@ -1,6 +1,8 @@
 # Lightroom Edit In Capture One
 EditInC1 is a small shim program to allow the easy demosaicing of a raw Lightroom managed RAW file by Capture One via the Edit In option.
 
+![](EditInC1Demo.gif)
+
 # Setup
 
 1. Create an "Edit in" profile in Lightroom, choosing the correct location of "EditInC1.exe" as follows:
